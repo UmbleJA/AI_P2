@@ -249,8 +249,14 @@ void Veletas::checkEndOfTurn(){
 				}
 			}
 		}
-	textScore = "Green: " + std::to_string(player1Score) + "     Blue: " + std::to_string(player2Score);
-
+	if(player1Score==POINTS_TO_WIN)
+		textScore = "GREEN WINS!";
+	else if (player2Score==POINTS_TO_WIN)
+		textScore = "BLUE WINS!";
+	else{
+		int goodness = board.getGoodness();
+		textScore = "Green: " + std::to_string(player1Score) + "     Blue: " + std::to_string(player2Score) + "       Goodness: "+std::to_string(goodness);
+	}
 }
 
 void Veletas::refreshPieces(){

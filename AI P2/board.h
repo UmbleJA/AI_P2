@@ -1,6 +1,4 @@
 #pragma once
-
-#include "entity.h"
 #include "pos.h"
 #include <vector>
 #include <set>
@@ -156,9 +154,44 @@ public:
 		return count;
 	}
 
+	int getGoodness(){
+		//figure out how close shooters are to each position
+		int movesToGetShooter[BOARD_DIMS][BOARD_DIMS]={-1};
+		vector<Pos> shooters = getShooterPos();
+		stack<Pos> stk;
+		for(Pos s : shooters){
+			stk.push(s);
+			movesToGetShooter[s.getX()][s.getY()]=0;
+			while(!stk.empty()){
+				Pos c = stk.top();
+				stk.pop();
+				int currNumMoves = movesToGetShooter[c.getX()][c.getY()]+1;
+				for(Pos p : getPossibleMoves(c)){
+					int prevMoves = movesToGetShooter[p.getX()][p.getY()];
+					if(prevMoves==-1 || currNumMoves < prevMoves){
+						stk.push(p);
+						movesToGetShooter[p.getX()][p.getY()]=prevMoves;
+					}
+				}
+			}
+		}
+		//figure out who is winning in each reachable position.
+		int boardSum=0;
+		for(int i=0; i<BOARD_DIMS; i++)
+			for(int j=0;j<BOARD_DIMS;j++){
+				Pos p(i,j);
+				if(movesToGetShooter[i][j]>=0){
+					int nEmpty = getNumEmptyAdjacentSpaces(p);
+					int controlVal = getControlValue(p);
+					if(controlVal!=0)
+						boardSum += max(3-movesToGetShooter[i][j],0)*(controlVal/abs(controlVal))*(8-nEmpty);
+				}
+			}
+		return boardSum;
+	}
+
 private:
 	PieceType data[BOARD_DIMS][BOARD_DIMS];
-	Game* game;
 
 	bool isEmpty(int x, int y){
 		return data[x][y]==EMPTY;

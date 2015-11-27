@@ -1,6 +1,24 @@
-﻿Build started 11/27/2015 5:08:18 PM.
+﻿Build started 11/27/2015 6:38:34 PM.
      1>Project "C:\Projects\AI_P2\AI P2\PlanetCollision.vcxproj" on node 2 (Build target(s)).
-     1>Link:
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I"C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\\Include" /ZI /nologo /W3 /WX- /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt TextDX.cpp game.cpp graphics.cpp image.cpp input.cpp textureManager.cpp veletas.cpp winmain.cpp
+         veletas.cpp
+     1>c:\projects\ai_p2\ai p2\veletas.cpp(64): warning C4244: 'argument' : conversion from 'time_t' to 'unsigned int', possible loss of data
+     1>c:\projects\ai_p2\ai p2\veletas.cpp(143): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\projects\ai_p2\ai p2\veletas.cpp(146): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\projects\ai_p2\ai p2\veletas.cpp(147): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\projects\ai_p2\ai p2\veletas.cpp(270): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+         Generating Code...
+         Compiling...
+         winmain.cpp
+         textureManager.cpp
+         input.cpp
+         image.cpp
+         graphics.cpp
+         game.cpp
+         TextDX.cpp
+         Generating Code...
+       Link:
          C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Projects\AI_P2\AI P2\Debug\Veletas.exe" /NOLOGO /LIBPATH:"C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\\Lib\x86" d3d9.lib d3dx9.lib winmm.lib xinput.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Projects\AI_P2\AI P2\Debug\Veletas.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Projects\AI_P2\AI P2\Debug\Veletas.lib" /MACHINE:X86 /SAFESEH Debug\game.obj
          Debug\graphics.obj
          Debug\image.obj
@@ -15,4 +33,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:00.57
+Time Elapsed 00:00:09.19
