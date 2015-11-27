@@ -9,27 +9,20 @@
 
 #include "entity.h"
 #include "constants.h"
+#include "pos.h"
 
 // inherits from Entity class
 class Piece : public Entity
 {
-	pieceType type;
+	PieceType type;
 public:
     // constructors
-	Piece(pieceType pt,int nx, int ny){setType(pt);x=nx;y=ny;};
-	Piece(){type=EMPTY;x=0;y=0;};
-    // inherited member functions
-    virtual void draw(){
-		Image::draw();
-	}
+	Piece(PieceType pt, Pos p):pos(p){setType(pt);}
+	Piece():pos(0,0){setType(EMPTY);}
 
-    virtual bool initialize(Game *gamePtr, int width, int height, int ncols,TextureManager *textureM){
-		return Entity::initialize(gamePtr,width,height,ncols,textureM);
-	}
+	Pos pos;
 
-	bool inUse;
-	int x,y;
-	void setType(pieceType t){
+	void setType(PieceType t){
 		type=t;
 		switch(type){
 		case EMPTY:
@@ -47,7 +40,7 @@ public:
 		}
 	}
 
-	pieceType getType(){
+	PieceType getType(){
 		return type;
 	}
 

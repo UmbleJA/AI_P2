@@ -29,11 +29,11 @@
 //-----------------------------------------------
 
 // window
-const char CLASS_NAME[] = "Spacewar";
-const char GAME_TITLE[] = "Spacewar";
+const char CLASS_NAME[] = "Veletas";
+const char GAME_TITLE[] = "Veletas";
 const bool FULLSCREEN = false;              // windowed or fullscreen
-const UINT GAME_WIDTH =  700;               // width of game in pixels
-const UINT GAME_HEIGHT = 700;               // height of game in pixels
+const UINT GAME_WIDTH =  600;               // width of game in pixels
+const UINT GAME_HEIGHT = 600;               // height of game in pixels
 
 // game
 const double PI = 3.14159265;
@@ -50,6 +50,7 @@ const char NEBULA_IMAGE[] =   "pictures\\orion.jpg";     // photo source NASA/co
 const char TEXTURES_IMAGE[] = "pictures\\textures.png";  // game textures
 const char BOARD_IMAGE[] = "pictures\\board.png";  // game textures
 const char PIECES_IMAGE[] = "pictures\\pieces.png";  // game textures
+const char HIGHLIGHT_IMAGE[] = "pictures\\highlight.png"; //highlight text
 
 // key mappings
 // In this game simple constants are used for key mappings. If variables were used
@@ -58,7 +59,10 @@ const UCHAR ESC_KEY      = VK_ESCAPE;       // escape key
 const UCHAR ALT_KEY      = VK_MENU;         // Alt key
 const UCHAR ENTER_KEY    = VK_RETURN;       // Enter key
 
-enum pieceType{EMPTY,P1,P2,SHOOTER};
-const unsigned int boardDims = 7;
+enum PieceType{EMPTY,P1,P2,SHOOTER};
+const unsigned int BOARD_DIMS = 7;
 const unsigned int NUM_PIECES = 49;
+const unsigned int PIECE_SIZE = 80;
+const unsigned int BOARDER_SIZE = 20;
+const unsigned int NUM_HIGHLIGHTS = BOARD_DIMS*4;
 #endif

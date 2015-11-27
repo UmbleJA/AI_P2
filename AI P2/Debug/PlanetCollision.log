@@ -1,0 +1,34 @@
+﻿Build started 11/27/2015 4:30:00 PM.
+     1>Project "C:\Projects\AI_P2\AI P2\PlanetCollision.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I"C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\\Include" /ZI /nologo /W3 /WX- /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt veletas.cpp winmain.cpp
+         veletas.cpp
+     1>c:\projects\ai_p2\ai p2\board.h(19): warning C4244: 'argument' : conversion from 'const unsigned int' to 'float', possible loss of data
+     1>c:\projects\ai_p2\ai p2\board.h(20): warning C4244: 'argument' : conversion from 'const unsigned int' to 'float', possible loss of data
+     1>c:\projects\ai_p2\ai p2\veletas.cpp(59): warning C4244: 'argument' : conversion from 'time_t' to 'unsigned int', possible loss of data
+     1>c:\projects\ai_p2\ai p2\veletas.cpp(136): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\projects\ai_p2\ai p2\veletas.cpp(139): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\projects\ai_p2\ai p2\veletas.cpp(140): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+         Generating Code...
+         Compiling...
+         winmain.cpp
+     1>c:\projects\ai_p2\ai p2\board.h(19): warning C4244: 'argument' : conversion from 'const unsigned int' to 'float', possible loss of data
+     1>c:\projects\ai_p2\ai p2\board.h(20): warning C4244: 'argument' : conversion from 'const unsigned int' to 'float', possible loss of data
+         Generating Code...
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Projects\AI_P2\AI P2\Debug\Veletas.exe" /NOLOGO /LIBPATH:"C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\\Lib\x86" d3d9.lib d3dx9.lib winmm.lib xinput.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Projects\AI_P2\AI P2\Debug\Veletas.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Projects\AI_P2\AI P2\Debug\Veletas.lib" /MACHINE:X86 /SAFESEH Debug\entity.obj
+         Debug\game.obj
+         Debug\graphics.obj
+         Debug\image.obj
+         Debug\input.obj
+         Debug\TextDX.obj
+         Debug\veletas.obj
+         Debug\textureManager.obj
+         Debug\winmain.obj
+     1>entity.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/SAFESEH' specification
+         PlanetCollision.vcxproj -> C:\Projects\AI_P2\AI P2\Debug\Veletas.exe
+     1>Done Building Project "C:\Projects\AI_P2\AI P2\PlanetCollision.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:04.64
