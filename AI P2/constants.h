@@ -59,9 +59,9 @@ const UCHAR ESC_KEY      = VK_ESCAPE;       // escape key
 const UCHAR ALT_KEY      = VK_MENU;         // Alt key
 const UCHAR ENTER_KEY    = VK_RETURN;       // Enter key
 
-enum PieceType{EMPTY,P1,P2,SHOOTER};
+enum PieceType{P1,P2,SHOOTER,EMPTY};//listed in order of sprite
 const unsigned int BOARD_DIMS = 7;
-const unsigned int NUM_PIECES = 49;
+const unsigned int NUM_PIECES = BOARD_DIMS*BOARD_DIMS;
 const unsigned int PIECE_SIZE = 80;
 const unsigned int BOARDER_SIZE = 20;
 const unsigned int NUM_HIGHLIGHTS = BOARD_DIMS*4;

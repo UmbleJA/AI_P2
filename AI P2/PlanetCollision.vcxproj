@@ -87,7 +87,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="entity.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="graphics.cpp" />
     <ClCompile Include="image.cpp" />
@@ -100,13 +99,11 @@
   <ItemGroup>
     <ClInclude Include="board.h" />
     <ClInclude Include="constants.h" />
-    <ClInclude Include="entity.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="gameError.h" />
     <ClInclude Include="graphics.h" />
     <ClInclude Include="image.h" />
     <ClInclude Include="input.h" />
-    <ClInclude Include="piece.h" />
     <ClInclude Include="pos.h" />
     <ClInclude Include="TextDX.h" />
     <ClInclude Include="veletas.h" />

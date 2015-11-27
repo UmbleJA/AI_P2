@@ -12,10 +12,9 @@
 //=============================================================================
 // Constructor
 //=============================================================================
-Veletas::Veletas()
+Veletas::Veletas():targetPos(0,0)
 {
 	inputFilter=0;
-	targetPiece=nullptr;
 	isPlayer1Turn=true;
 	turnSequence = SELECTING;
 	isPlayer1AI=isPlayer2AI=false;//TODO:OPTIONAL
@@ -42,15 +41,21 @@ void Veletas::initialize(HWND hwnd)
         throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing board texture"));
 	if (!piecesTexture.initialize(graphics,PIECES_IMAGE))
         throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing pieces texture"));
-	if (!board.initialize(this, boardTexture.getWidth(), boardTexture.getHeight(), 1, &boardTexture))
-		 throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing board"));
-	if(!board.initializePieces(this,PIECE_SIZE,PIECE_SIZE,2,&piecesTexture))
-		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing peices"));
+
+	if(!background.initialize(graphics,0,0,0,&boardTexture))
+		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing background"));
+
+	for(int i=0;i<NUM_PIECES;i++){
+		if(!pieces[i].initialize(graphics,PIECE_SIZE,PIECE_SIZE,2,&piecesTexture))
+			throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing pieces"));
+	}
+
 	for(int i = 0 ; i < NUM_HIGHLIGHTS; i++){
 		if(!highlights[i].initialize(graphics,PIECE_SIZE,PIECE_SIZE,2,&piecesTexture))
 			throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing highlights"));
 		highlights[i].setVisible(false);
 	}
+
 	if(!text.initialize(graphics,20,true,false,"Verdana")){
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing text"));
 	}
@@ -66,6 +71,7 @@ void Veletas::initialize(HWND hwnd)
 		}
 	}
 	checkEndOfTurn();
+	refreshPieces();
     return;
 }
 
@@ -97,19 +103,19 @@ void Veletas::update()
 			{
 				if(turnSequence==SELECTING){
 					if(board.getType(p)==SHOOTER){
-						targetPiece = board.get(p);
+						targetPos = p;
 						possibleMoves = board.getPossibleMoves(p);
 						turnSequence=MOVING;
 						clearHighlights(); setHighlights(possibleMoves);//must call after
 					}
-					else clearHighlights();
 				}
 				else if(turnSequence==MOVING){
 					if(contains(possibleMoves,p)){
-						board.moveShooter(targetPiece,p);
+						board.moveShooter(targetPos,p);
 						possibleMoves=board.getPossibleMoves(p,true);
 						turnSequence=SHOOTING;
 						clearHighlights(); setHighlights(possibleMoves);//must call after
+						refreshPieces();
 					}
 				}
 				else if (turnSequence==SHOOTING){
@@ -119,6 +125,7 @@ void Veletas::update()
 						turnSequence=SELECTING;
 						checkEndOfTurn();//must be called before bool flips
 						isPlayer1Turn=!isPlayer1Turn;
+						refreshPieces();
 					}
 				}
 
@@ -176,7 +183,10 @@ void Veletas::render()
 {
     graphics->spriteBegin();                // begin drawing sprites
 
-	board.draw();
+	background.draw();
+
+	for(int i=0;i<NUM_PIECES;i++)
+		pieces[i].draw();
 
 	for(int i=0; i<NUM_HIGHLIGHTS;i++)
 		highlights[i].draw(0x4FFFFFFF);
@@ -240,4 +250,17 @@ void Veletas::checkEndOfTurn(){
 			}
 		}
 	textScore = "Green: " + std::to_string(player1Score) + "     Blue: " + std::to_string(player2Score);
+
+}
+
+void Veletas::refreshPieces(){
+	for(int i=0; i<BOARD_DIMS; i++)
+		for(int j=0; j<BOARD_DIMS; j++){
+			Pos p(i,j);
+			Image * img = &pieces[i*BOARD_DIMS+j];
+			int x,y;
+			p.toRaw(x,y);
+			img->setCurrentFrame((int)board.getType(p));
+			img->setX(x); img->setY(y);
+		}
 }

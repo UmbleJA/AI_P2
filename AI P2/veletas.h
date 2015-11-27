@@ -11,7 +11,6 @@
 #include "textureManager.h"
 #include "image.h"
 #include "board.h"
-#include "piece.h"
 #include <vector>
 #include <string>
 #include "TextDX.h"
@@ -35,8 +34,10 @@ private:
 	TextureManager boardTexture;
 	TextureManager piecesTexture;
 	Board board;
-	Piece* targetPiece;
+	Image background;
+	Pos targetPos;
 	Image highlights[NUM_HIGHLIGHTS];
+	Image pieces[NUM_PIECES];
 	vector<Pos> possibleMoves;
 	TextDX text;
 	std::string textInfo;
@@ -52,6 +53,7 @@ private:
 
 	bool isHumanMove(){return isPlayer1Turn&&!isPlayer1AI || !isPlayer1Turn&&!isPlayer2AI;}
 	bool isAIMove(){return isPlayer1Turn&&isPlayer1AI || !isPlayer1Turn&&isPlayer2AI;}
+	void refreshPieces();
 
 	void checkEndOfTurn();
 

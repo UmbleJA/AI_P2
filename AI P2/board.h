@@ -1,4 +1,5 @@
-#include "piece.h"
+#pragma once
+
 #include "entity.h"
 #include "pos.h"
 #include <vector>
@@ -8,50 +9,31 @@ using std::set;
 using std::vector;
 using std::stack;
 
-class Board : public Entity{
+class Board{
 public:
 
-	virtual bool initializePieces(Game *gamePtr, int width, int height, int ncols,TextureManager *textureM){
-		for(int i=0;i<BOARD_DIMS;i++){
-			for(int j=0;j<BOARD_DIMS;j++){
-				if(!data[i][j].initialize(gamePtr,width,height,ncols,textureM))return false;
-				data[i][j].pos = Pos(i,j);
-				data[i][j].setX((i*PIECE_SIZE)+BOARDER_SIZE);
-				data[i][j].setY((j*PIECE_SIZE)+BOARDER_SIZE);
-			}
-		}
-		return true;
-	}
-
-	void draw(){
-		Image::draw();  
-		for(int i=0;i<BOARD_DIMS;i++){
-			for(int j=0;j<BOARD_DIMS;j++){
-				data[i][j].draw();
-			}
-		}
-	}
-
-	Piece* get(Pos pos){
-		return &data[pos.getX()][pos.getY()];
+	Board(){
+		for(int i=0;i<BOARD_DIMS;i++)
+			for(int j=0;j<BOARD_DIMS;j++)
+				data[i][j]=EMPTY;
 	}
 
 	PieceType getType(Pos pos){
-		return data[pos.getX()][pos.getY()].getType();
+		return data[pos.getX()][pos.getY()];
 	}
 
 	void setType(Pos pos, PieceType type){
-		data[pos.getX()][pos.getY()].setType(type);
+		data[pos.getX()][pos.getY()]=type;
 	}
 
 	//moves a piece to a location
-	bool moveShooter(Piece* piece, Pos pos){
-		if(piece->getType()==SHOOTER){
-			if(pos==piece->pos)
+	bool moveShooter(Pos shooter, Pos pos){
+		if(getType(shooter)==SHOOTER){
+			if(pos==shooter)
 				return true;
 			if(getType(pos)==EMPTY){
 				setType(pos,SHOOTER);
-				setType(piece->pos,EMPTY);
+				setType(shooter,EMPTY);
 				return true;
 			}
 		}
@@ -102,7 +84,7 @@ public:
 		vector<Pos> ret;
 		for(int x=0;x<BOARD_DIMS;x++)
 			for(int y=0;y<BOARD_DIMS;y++)
-				if(data[x][y].getType()==SHOOTER)
+				if(data[x][y]==SHOOTER)
 					ret.push_back(Pos(x,y));
 		return ret;
 	}
@@ -175,11 +157,11 @@ public:
 	}
 
 private:
-	Piece data[BOARD_DIMS][BOARD_DIMS];
+	PieceType data[BOARD_DIMS][BOARD_DIMS];
 	Game* game;
 
 	bool isEmpty(int x, int y){
-		return data[x][y].getType()==EMPTY;
+		return data[x][y]==EMPTY;
 	}
 	bool isLegal(int x, int y){return x>=0 && x<BOARD_DIMS && y>=0 && y<BOARD_DIMS;}
 };
