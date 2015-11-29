@@ -19,6 +19,7 @@ public:
 	}
 
 	Pos(unsigned int x, unsigned int y){set(x,y);}
+	Pos(){set(0,0);}
 	
 	void toRaw(int & retX, int & retY){
 		retX = BOARDER_SIZE+x*PIECE_SIZE;

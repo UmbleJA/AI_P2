@@ -14,6 +14,18 @@ public:
 		for(int i=0;i<BOARD_DIMS;i++)
 			for(int j=0;j<BOARD_DIMS;j++)
 				data[i][j]=EMPTY;
+		player1Score=player2Score=0;
+		gameOver=false;
+	}
+
+	Board(const Board &b){
+		for(int i=0;i<BOARD_DIMS;i++)
+			for(int j=0;j<BOARD_DIMS;j++)
+				data[i][j]=b.data[i][j];
+		player1Score=b.player1Score;
+		player2Score=b.player2Score;
+		shooterPositions=b.shooterPositions;
+		gameOver=b.gameOver;
 	}
 
 	PieceType getType(Pos pos){
@@ -21,7 +33,13 @@ public:
 	}
 
 	void setType(Pos pos, PieceType type){
+		if(data[pos.getX()][pos.getY()]==SHOOTER)
+			shooterPositions.erase(pos);
+
 		data[pos.getX()][pos.getY()]=type;
+		
+		if(type==SHOOTER)
+			shooterPositions.insert(pos);
 	}
 
 	//moves a piece to a location
@@ -32,59 +50,56 @@ public:
 			if(getType(pos)==EMPTY){
 				setType(pos,SHOOTER);
 				setType(shooter,EMPTY);
+				shooterPositions.erase(shooter);
+				shooterPositions.insert(pos);
 				return true;
 			}
 		}
 		return false;
 	}
 
+	//get all possible moves from a current position
 	vector<Pos> getPossibleMoves(Pos pos, bool isShooting = false){
 		vector<Pos> ret;
-		if(getType(pos)==SHOOTER){
-			if(!isShooting) ret.push_back(pos);
-			//N
-			for(int x = pos.getX(),y = pos.getY()-1; isLegal(x,y) && isEmpty(x,y); y--){
-				ret.push_back(Pos(x,y));
-			}
-			//NE
-			for(int x = pos.getX()+1,y = pos.getY()-1; isLegal(x,y) && isEmpty(x,y); y--,x++){
-				ret.push_back(Pos(x,y));
-			}
-			//E
-			for(int x = pos.getX()+1,y = pos.getY(); isLegal(x,y) && isEmpty(x,y); x++){
-				ret.push_back(Pos(x,y));
-			}
-			//SE
-			for(int x = pos.getX()+1,y = pos.getY()+1; isLegal(x,y) && isEmpty(x,y); y++,x++){
-				ret.push_back(Pos(x,y));
-			}
-			//S
-			for(int x = pos.getX(),y = pos.getY()+1; isLegal(x,y) && isEmpty(x,y); y++){
-				ret.push_back(Pos(x,y));
-			}
-			//SW
-			for(int x = pos.getX()-1,y = pos.getY()+1; isLegal(x,y) && isEmpty(x,y); y++,x--){
-				ret.push_back(Pos(x,y));
-			}
-			//W
-			for(int x = pos.getX()-1,y = pos.getY(); isLegal(x,y) && isEmpty(x,y); x--){
-				ret.push_back(Pos(x,y));
-			}
-			//NW
-			for(int x = pos.getX()-1,y = pos.getY()-1; isLegal(x,y) && isEmpty(x,y); y--,x--){
-				ret.push_back(Pos(x,y));
-			}
+		if(!isShooting) ret.push_back(pos);
+		//N
+		for(int x = pos.getX(),y = pos.getY()-1; isLegal(x,y) && isEmpty(x,y); y--){
+			ret.push_back(Pos(x,y));
 		}
+		//NE
+		for(int x = pos.getX()+1,y = pos.getY()-1; isLegal(x,y) && isEmpty(x,y); y--,x++){
+			ret.push_back(Pos(x,y));
+		}
+		//E
+		for(int x = pos.getX()+1,y = pos.getY(); isLegal(x,y) && isEmpty(x,y); x++){
+			ret.push_back(Pos(x,y));
+		}
+		//SE
+		for(int x = pos.getX()+1,y = pos.getY()+1; isLegal(x,y) && isEmpty(x,y); y++,x++){
+			ret.push_back(Pos(x,y));
+		}
+		//S
+		for(int x = pos.getX(),y = pos.getY()+1; isLegal(x,y) && isEmpty(x,y); y++){
+			ret.push_back(Pos(x,y));
+		}
+		//SW
+		for(int x = pos.getX()-1,y = pos.getY()+1; isLegal(x,y) && isEmpty(x,y); y++,x--){
+			ret.push_back(Pos(x,y));
+		}
+		//W
+		for(int x = pos.getX()-1,y = pos.getY(); isLegal(x,y) && isEmpty(x,y); x--){
+			ret.push_back(Pos(x,y));
+		}
+		//NW
+		for(int x = pos.getX()-1,y = pos.getY()-1; isLegal(x,y) && isEmpty(x,y); y--,x--){
+			ret.push_back(Pos(x,y));
+		}
+		
 		return ret;
 	}
 
-	vector<Pos> getShooterPos(){
-		vector<Pos> ret;
-		for(int x=0;x<BOARD_DIMS;x++)
-			for(int y=0;y<BOARD_DIMS;y++)
-				if(data[x][y]==SHOOTER)
-					ret.push_back(Pos(x,y));
-		return ret;
+	set<Pos>& getShooterPos(){
+		return shooterPositions;
 	}
 
 	//returns positive for p1, negative for p2
@@ -130,17 +145,20 @@ public:
 	}
 
 	int getControlValue(Pos p){
-		int largest, smallest;
-		largest=smallest=0;
-		for(int i = -1; i<=1; i++)
-			for(int j = -1; j<=1;j++)
-				if((i!=0||j!=0) && (i==0||j==0) && isLegal(p.getX()+i,p.getY()+j)){
-					Pos c(p.getX()+i,p.getY()+j);
-					int d = getGroupSize(c);
-					largest = max(largest,d);
-					smallest = min(smallest,d);
-				}
-		return abs(largest)-abs(smallest);		
+		if(getType(p)==EMPTY||getType(p)==SHOOTER){
+			int largest, smallest;
+			largest=smallest=0;
+			for(int i = -1; i<=1; i++)
+				for(int j = -1; j<=1;j++)
+					if((i!=0||j!=0) && (i==0||j==0) && isLegal(p.getX()+i,p.getY()+j)){
+						Pos c(p.getX()+i,p.getY()+j);
+						int d = getGroupSize(c);
+						largest = max(largest,d);
+						smallest = min(smallest,d);
+					}
+			return abs(largest)-abs(smallest);
+		}else
+			return 0;
 	}
 	
 	int getNumEmptyAdjacentSpaces(Pos p){
@@ -154,10 +172,23 @@ public:
 		return count;
 	}
 
-	int getGoodness(){
+	int getNumAdjacentSpaces(Pos p){
+		int count=0;
+		for(int i = -1; i<=1; i++)
+			for(int j = -1; j<=1;j++)
+				if((i!=0||j!=0) && isLegal(p.getX()+i,p.getY()+j)){
+					count++;
+				}
+		return count;
+	}
+
+	int getGoodness(int boardVals[BOARD_DIMS][BOARD_DIMS]){
 		//figure out how close shooters are to each position
-		int movesToGetShooter[BOARD_DIMS][BOARD_DIMS]={-1};
-		vector<Pos> shooters = getShooterPos();
+		int movesToGetShooter[BOARD_DIMS][BOARD_DIMS];
+		for(int i=0;i<BOARD_DIMS;i++)
+			for(int j=0;j<BOARD_DIMS;j++)
+				movesToGetShooter[i][j]=-1;
+		set<Pos> shooters = getShooterPos();
 		stack<Pos> stk;
 		for(Pos s : shooters){
 			stk.push(s);
@@ -170,28 +201,66 @@ public:
 					int prevMoves = movesToGetShooter[p.getX()][p.getY()];
 					if(prevMoves==-1 || currNumMoves < prevMoves){
 						stk.push(p);
-						movesToGetShooter[p.getX()][p.getY()]=prevMoves;
+						movesToGetShooter[p.getX()][p.getY()]=currNumMoves;
 					}
 				}
 			}
 		}
+
 		//figure out who is winning in each reachable position.
 		int boardSum=0;
 		for(int i=0; i<BOARD_DIMS; i++)
 			for(int j=0;j<BOARD_DIMS;j++){
 				Pos p(i,j);
+				boardVals[i][j]=0;
 				if(movesToGetShooter[i][j]>=0){
 					int nEmpty = getNumEmptyAdjacentSpaces(p);
 					int controlVal = getControlValue(p);
-					if(controlVal!=0)
-						boardSum += max(3-movesToGetShooter[i][j],0)*(controlVal/abs(controlVal))*(8-nEmpty);
+					if(controlVal!=0){
+						int t = max(3-movesToGetShooter[i][j],0)*(controlVal)*(8-nEmpty);
+						boardVals[i][j] = t;
+						boardSum +=  t;
+					}
 				}
 			}
 		return boardSum;
 	}
 
+	void processBoardEndOfTurn(bool isPlayer1Turn){
+		set<Pos> shooters = getShooterPos();
+		for(Pos p : shooters)
+			if(getNumEmptyAdjacentSpaces(p)==0){
+				int val = getControlValue(p);
+				if(val==0){
+					if(isPlayer1Turn){
+						player2Score++;
+						setType(p,P2);
+					}else{
+						player1Score++;
+						setType(p,P1);
+					}
+				}else{
+					if(val>0){
+						player1Score++;
+						setType(p,P1);
+					}else{
+						player2Score++;
+						setType(p,P2);
+					}
+				}
+			}
+		if(getShooterPos().size()==0)gameOver=true;
+	}
+
+	int getPlayer1Score(){return player1Score;}
+	int getPlayer2Score(){return player2Score;}
+	bool isGameOver(){return gameOver;}
+
 private:
 	PieceType data[BOARD_DIMS][BOARD_DIMS];
+	int player1Score, player2Score;
+	set<Pos> shooterPositions;
+	bool gameOver;
 
 	bool isEmpty(int x, int y){
 		return data[x][y]==EMPTY;

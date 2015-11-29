@@ -14,6 +14,7 @@
 #include <vector>
 #include <string>
 #include "TextDX.h"
+#include "MinMax.h"
 using std::vector;
 using std::string;
 
@@ -49,13 +50,15 @@ private:
 
 	bool isPlayer1AI,isPlayer2AI;
 
-	int player1Score, player2Score;
-
+	bool isGameActive;
 	bool isHumanMove(){return isPlayer1Turn&&!isPlayer1AI || !isPlayer1Turn&&!isPlayer2AI;}
 	bool isAIMove(){return isPlayer1Turn&&isPlayer1AI || !isPlayer1Turn&&isPlayer2AI;}
 	void refreshPieces();
 
 	void checkEndOfTurn();
+
+	int debugGoodness[BOARD_DIMS][BOARD_DIMS];
+	string debugText;
 
 public:
     // Constructor

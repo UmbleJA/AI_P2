@@ -14,11 +14,15 @@
 //=============================================================================
 Veletas::Veletas():targetPos(0,0)
 {
+	isGameActive=true;
 	inputFilter=0;
 	isPlayer1Turn=true;
 	turnSequence = SELECTING;
-	isPlayer1AI=isPlayer2AI=false;//TODO:OPTIONAL
-	player1Score=player2Score=0;
+	isPlayer1AI= false;
+	isPlayer2AI=true;
+	for(int i=0;i<BOARD_DIMS;i++)
+		for(int j=0;j<BOARD_DIMS;j++)
+			debugGoodness[i][j]=0;
 }
 
 //=============================================================================
@@ -63,7 +67,7 @@ void Veletas::initialize(HWND hwnd)
 	//place shooters
 	srand(time(0));
 	int shootersPlaced=0;
-	while(shootersPlaced<3){
+	while(shootersPlaced<NUM_SHOOTERS){
 		Pos p(rand()%BOARD_DIMS,rand()%BOARD_DIMS);
 		if(board.getType(p)==EMPTY){
 			board.setType(p,SHOOTER);
@@ -80,6 +84,13 @@ void Veletas::initialize(HWND hwnd)
 //=============================================================================
 void Veletas::update()
 {
+	static bool skipFirstFrame = true;
+	if(skipFirstFrame){
+		skipFirstFrame=false;
+		return;
+	}
+
+	if(!isGameActive)return;
 
 	if(isPlayer1Turn)
 		textInfo = "Green Turn: ";
@@ -131,9 +142,39 @@ void Veletas::update()
 
 			}
 		}
-	}
-	if(isAIMove()){
+	} else if(isAIMove()){
 	//TODO: Make the AI move
+		static Pos moveFrom, moveTo, shoot;
+		static float aiMovementLag = 0;
+		aiMovementLag+=frameTime;
+		if(turnSequence==SELECTING || aiMovementLag >= AI_MOVEMENT_TIME){
+			aiMovementLag=0;
+			if(turnSequence==SELECTING){
+				MinMax minMax(&board,isPlayer1Turn);
+				minMax.findBestMoves(moveFrom,moveTo,shoot);
+				debugText ="AI Goodness: "+std::to_string(minMax.getGoodness());
+				targetPos = moveFrom;
+				possibleMoves = board.getPossibleMoves(moveFrom);
+				turnSequence=MOVING;
+				clearHighlights(); setHighlights(possibleMoves);//must call after
+			
+			} else if(turnSequence==MOVING){
+				board.moveShooter(targetPos,moveTo);
+				possibleMoves=board.getPossibleMoves(moveTo,true);
+				turnSequence=SHOOTING;
+				clearHighlights(); setHighlights(possibleMoves);//must call after
+				refreshPieces();
+			
+			} else if(turnSequence==SHOOTING){
+				board.setType(shoot,(isPlayer1Turn?P1:P2));
+				clearHighlights();
+				turnSequence=SELECTING;
+				checkEndOfTurn();//must be called before bool flips
+				isPlayer1Turn=!isPlayer1Turn;
+				refreshPieces();
+			}
+		}
+
 	}
 	if(!input->getMouseLButton()) inputFilter=true;
 }
@@ -191,8 +232,16 @@ void Veletas::render()
 	for(int i=0; i<NUM_HIGHLIGHTS;i++)
 		highlights[i].draw(0x4FFFFFFF);
 	
-	text.print(textInfo,BOARDER_SIZE,0);
+	text.setFontColor(0xFFFFFFFF);
+	//text.print(textInfo,BOARDER_SIZE,0);
+	text.print(debugText,BOARDER_SIZE,0);
 	text.print(textScore,BOARDER_SIZE,GAME_HEIGHT-BOARDER_SIZE);
+
+	text.setFontColor(0xFF000000);
+	for(int i=0;i<BOARD_DIMS;i++)
+		for(int j=0;j<BOARD_DIMS;j++)
+			text.print(std::to_string(debugGoodness[i][j]),BOARDER_SIZE+PIECE_SIZE*i,BOARDER_SIZE+PIECE_SIZE*j);
+
     graphics->spriteEnd();                  // end drawing sprites
 }
 
@@ -227,35 +276,18 @@ bool Veletas::contains(const vector<Pos> & vec, const Pos pos) const{
 }
 
 void Veletas::checkEndOfTurn(){
-	vector<Pos> shooters = board.getShooterPos();
-	for(Pos p : shooters)
-		if(board.getNumEmptyAdjacentSpaces(p)==0){
-			int val = board.getControlValue(p);
-			if(val==0){
-				if(isPlayer1Turn){
-					player2Score++;
-					board.setType(p,P2);
-				}else{
-					player1Score++;
-					board.setType(p,P1);
-				}
-			}else{
-				if(val>0){
-					player1Score++;
-					board.setType(p,P1);
-				}else{
-					player2Score++;
-					board.setType(p,P2);
-				}
-			}
-		}
-	if(player1Score==POINTS_TO_WIN)
+	board.processBoardEndOfTurn(isPlayer1Turn);
+	if(board.getPlayer1Score()==POINTS_TO_WIN){
 		textScore = "GREEN WINS!";
-	else if (player2Score==POINTS_TO_WIN)
+		isGameActive=false;
+	}
+	else if (board.getPlayer2Score()==POINTS_TO_WIN){
 		textScore = "BLUE WINS!";
+		isGameActive=false;
+	}
 	else{
-		int goodness = board.getGoodness();
-		textScore = "Green: " + std::to_string(player1Score) + "     Blue: " + std::to_string(player2Score) + "       Goodness: "+std::to_string(goodness);
+		int goodness = board.getGoodness(debugGoodness);
+		textScore = "Green: " + std::to_string(board.getPlayer1Score()) + "     Blue: " + std::to_string(board.getPlayer2Score()) + "       Goodness: "+std::to_string(goodness);
 	}
 }
 

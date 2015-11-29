@@ -74,5 +74,8 @@
     <ClInclude Include="TextDX.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MinMax.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
