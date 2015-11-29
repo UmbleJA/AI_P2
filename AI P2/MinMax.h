@@ -5,71 +5,50 @@
 static int garbage[BOARD_DIMS][BOARD_DIMS];
 
 class MinMax{
-	int goodness, depth;
+	int score, depth, heuristicVal;
 	Board* board;
 	Pos bestChildMoveFrom, bestChildMoveTo,bestChildShoot;//best move from this board
 	bool isMax;
 	bool validChildVals;
-	bool traversedToEndOfGame;
+	bool foundNextPoint;
 
 	MinMax(MinMax * parent, Board* b){
 		board = b;
 		depth = parent->depth+1;
 		isMax = !parent->isMax;
-		goodness=0;
+		score=0;
 		validChildVals=false;
-		traversedToEndOfGame=false;
+		foundNextPoint=false;
+		heuristicVal=parent->heuristicVal;
 	}
 
 public:
 	MinMax(Board* b, bool isMax){
 		validChildVals=false;
-		traversedToEndOfGame=false;
+		foundNextPoint=false;
 		board = b;
 		depth = 0;
 		this->isMax=isMax;
-		goodness=0;
+		score=board->getPlayer1Score()-board->getPlayer2Score();
+		heuristicVal=0;
 	}
 
 	int findBestMoves(Pos & moveFrom, Pos & moveTo, Pos & shoot){
-		traversedToEndOfGame=false;
+		foundNextPoint=false;
 		traverseTree();
-		if(!traversedToEndOfGame)heuristicNextMove();
 		moveFrom = bestChildMoveFrom;
 		moveTo = bestChildMoveTo;
 		shoot = bestChildShoot;
-		return goodness;
+		return score;
 	}
-
-	int getGoodness(){return goodness;}
 
 private:
-	
-	void heuristicNextMove(){
-		for(Pos moveFrom : board->getShooterPos())
-				for(Pos moveTo : board->getPossibleMoves(moveFrom)){
-					Board cpy(*board);
-					cpy.moveShooter(moveFrom,moveTo);
-					for(Pos shoot : cpy.getPossibleMoves(moveTo,true)){
-						cpy.setType(shoot, (isMax?P1:P2) );
-						cpy.processBoardEndOfTurn(isMax);
-						int val = cpy.getGoodness(garbage);
-						if((isMax && val>goodness) || (!isMax && val<goodness)){
-							goodness=val;
-							bestChildMoveFrom=moveFrom;
-							bestChildMoveTo=moveTo;
-							bestChildShoot=shoot;
-						}
-						cpy=*board;cpy.moveShooter(moveFrom,moveTo);
-					}
-				}
-	}
 
 	void traverseTree(){
-		if(board->isGameOver())
-			traversedToEndOfGame=true;
+		if(depth==1)
+			heuristicVal = board->getGoodness(garbage);
 		if(depth==MOVES_LOOKAHEAD || board->isGameOver()){
-			goodness = (board->getPlayer1Score()-board->getPlayer2Score())*1000;
+			score = (board->getPlayer1Score()-board->getPlayer2Score());
 		}else{
 			for(Pos moveFrom : board->getShooterPos())
 				for(Pos moveTo : board->getPossibleMoves(moveFrom)){
@@ -78,20 +57,27 @@ private:
 					for(Pos shoot : cpy.getPossibleMoves(moveTo,true)){
 						cpy.setType(shoot, (isMax?P1:P2) );
 						cpy.processBoardEndOfTurn(isMax);
+						if(cpy.getPlayer1Score()!=board->getPlayer1Score() ||
+							cpy.getPlayer2Score()!=board->getPlayer2Score())
+								foundNextPoint=true;
 						//min has now generated a board representing one of his moves
 						MinMax child(this,&cpy);
 						child.traverseTree();
 						//reset cpy
 						cpy = *board;cpy.moveShooter(moveFrom,moveTo);
 						//if the child is best	
-						if(!validChildVals || (isMax && child.goodness > goodness) || (!isMax&& child.goodness < goodness)){
+						if(!validChildVals || (isMax && child.score > score) || (!isMax&& child.score < score)
+							|| (score==child.score && ((isMax && child.heuristicVal>heuristicVal) || (!isMax && child.heuristicVal<heuristicVal) ))
+							){
 							bestChildMoveFrom=moveFrom;
 							bestChildMoveTo=moveTo;
 							bestChildShoot=shoot;
-							goodness=child.goodness;
+							score=child.score;
 							validChildVals=true;
-							traversedToEndOfGame=child.traversedToEndOfGame;
+							foundNextPoint=child.foundNextPoint;
+							heuristicVal = child.heuristicVal;
 						}
+						
 					}
 				}
 		}

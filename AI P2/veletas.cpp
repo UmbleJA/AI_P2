@@ -152,7 +152,6 @@ void Veletas::update()
 			if(turnSequence==SELECTING){
 				MinMax minMax(&board,isPlayer1Turn);
 				minMax.findBestMoves(moveFrom,moveTo,shoot);
-				debugText ="AI Goodness: "+std::to_string(minMax.getGoodness());
 				targetPos = moveFrom;
 				possibleMoves = board.getPossibleMoves(moveFrom);
 				turnSequence=MOVING;
@@ -233,8 +232,8 @@ void Veletas::render()
 		highlights[i].draw(0x4FFFFFFF);
 	
 	text.setFontColor(0xFFFFFFFF);
-	//text.print(textInfo,BOARDER_SIZE,0);
-	text.print(debugText,BOARDER_SIZE,0);
+	text.print(textInfo,BOARDER_SIZE,0);
+	//text.print(debugText,BOARDER_SIZE,0);
 	text.print(textScore,BOARDER_SIZE,GAME_HEIGHT-BOARDER_SIZE);
 
 	text.setFontColor(0xFF000000);
