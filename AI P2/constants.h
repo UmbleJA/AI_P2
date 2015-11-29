@@ -65,8 +65,8 @@ const unsigned int NUM_PIECES = BOARD_DIMS*BOARD_DIMS;
 const unsigned int PIECE_SIZE = 80;
 const unsigned int BOARDER_SIZE = 20;
 const unsigned int NUM_HIGHLIGHTS = BOARD_DIMS*4;
-const unsigned int NUM_SHOOTERS = 1;
-const unsigned int POINTS_TO_WIN = 1;
+const unsigned int NUM_SHOOTERS = 3;
+const unsigned int POINTS_TO_WIN = 2;
 const unsigned int MOVES_LOOKAHEAD = 2;
 const float AI_MOVEMENT_TIME = 0.5;
 #endif

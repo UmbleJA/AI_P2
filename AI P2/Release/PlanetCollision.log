@@ -1,4 +1,4 @@
-﻿Build started 11/28/2015 9:05:42 PM.
+﻿Build started 11/29/2015 11:06:44 AM.
      1>Project "C:\Projects\AI_P2\AI P2\PlanetCollision.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I"C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\\Include" /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D _MBCS /Gm- /EHsc /MT /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt TextDX.cpp game.cpp graphics.cpp image.cpp input.cpp textureManager.cpp veletas.cpp winmain.cpp
@@ -31,4 +31,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:08.24
+Time Elapsed 00:00:07.31

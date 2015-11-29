@@ -10,6 +10,7 @@ class MinMax{
 	Pos bestChildMoveFrom, bestChildMoveTo,bestChildShoot;//best move from this board
 	bool isMax;
 	bool validChildVals;
+	bool traversedToEndOfGame;
 
 	MinMax(MinMax * parent, Board* b){
 		board = b;
@@ -17,11 +18,13 @@ class MinMax{
 		isMax = !parent->isMax;
 		goodness=0;
 		validChildVals=false;
+		traversedToEndOfGame=false;
 	}
 
 public:
 	MinMax(Board* b, bool isMax){
 		validChildVals=false;
+		traversedToEndOfGame=false;
 		board = b;
 		depth = 0;
 		this->isMax=isMax;
@@ -29,8 +32,9 @@ public:
 	}
 
 	int findBestMoves(Pos & moveFrom, Pos & moveTo, Pos & shoot){
+		traversedToEndOfGame=false;
 		traverseTree();
-		if(goodness==0)heuristicNextMove();
+		if(!traversedToEndOfGame)heuristicNextMove();
 		moveFrom = bestChildMoveFrom;
 		moveTo = bestChildMoveTo;
 		shoot = bestChildShoot;
@@ -62,6 +66,8 @@ private:
 	}
 
 	void traverseTree(){
+		if(board->isGameOver())
+			traversedToEndOfGame=true;
 		if(depth==MOVES_LOOKAHEAD || board->isGameOver()){
 			goodness = (board->getPlayer1Score()-board->getPlayer2Score())*1000;
 		}else{
@@ -84,6 +90,7 @@ private:
 							bestChildShoot=shoot;
 							goodness=child.goodness;
 							validChildVals=true;
+							traversedToEndOfGame=child.traversedToEndOfGame;
 						}
 					}
 				}
