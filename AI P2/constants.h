@@ -32,8 +32,8 @@
 const char CLASS_NAME[] = "Veletas";
 const char GAME_TITLE[] = "Veletas";
 const bool FULLSCREEN = false;              // windowed or fullscreen
-const UINT GAME_WIDTH =  600;               // width of game in pixels
-const UINT GAME_HEIGHT = 600;               // height of game in pixels
+const UINT GAME_WIDTH =  630;               // width of game in pixels
+const UINT GAME_HEIGHT = 630;               // height of game in pixels
 
 // game
 const double PI = 3.14159265;
@@ -48,7 +48,7 @@ const float MASS_SHIP = 5.0f;
 // graphic images
 const char NEBULA_IMAGE[] =   "pictures\\orion.jpg";     // photo source NASA/courtesy of nasaimages.org 
 const char TEXTURES_IMAGE[] = "pictures\\textures.png";  // game textures
-const char BOARD_IMAGE[] = "pictures\\board.png";  // game textures
+const char BOARD_IMAGE[] = "pictures\\board10x10.png";  // game textures
 const char PIECES_IMAGE[] = "pictures\\pieces.png";  // game textures
 const char HIGHLIGHT_IMAGE[] = "pictures\\highlight.png"; //highlight text
 
@@ -60,13 +60,13 @@ const UCHAR ALT_KEY      = VK_MENU;         // Alt key
 const UCHAR ENTER_KEY    = VK_RETURN;       // Enter key
 
 enum PieceType{P1,P2,SHOOTER,EMPTY};//listed in order of sprite
-const unsigned int BOARD_DIMS = 7;
+const unsigned int BOARD_DIMS = 10;
 const unsigned int NUM_PIECES = BOARD_DIMS*BOARD_DIMS;
-const unsigned int PIECE_SIZE = 80;
-const unsigned int BOARDER_SIZE = 20;
+const unsigned int PIECE_SIZE = 60;
+const unsigned int BOARDER_SIZE = 15;
 const unsigned int NUM_HIGHLIGHTS = BOARD_DIMS*4;
-const unsigned int NUM_SHOOTERS = 3;
-const unsigned int POINTS_TO_WIN = 2;
+const unsigned int NUM_SHOOTERS = 7;
+const unsigned int POINTS_TO_WIN = 4;
 const unsigned int MOVES_LOOKAHEAD = 2;
 const float AI_MOVEMENT_TIME = 0.5;
 #endif
