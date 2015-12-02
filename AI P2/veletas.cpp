@@ -236,10 +236,10 @@ void Veletas::render()
 	//text.print(debugText,BOARDER_SIZE,0);
 	text.print(textScore,BOARDER_SIZE,GAME_HEIGHT-BOARDER_SIZE);
 
-	//text.setFontColor(0xFF000000);
-	//for(int i=0;i<BOARD_DIMS;i++)
-		//for(int j=0;j<BOARD_DIMS;j++)
-			//text.print(std::to_string(debugGoodness[i][j]),BOARDER_SIZE+PIECE_SIZE*i,BOARDER_SIZE+PIECE_SIZE*j);
+	text.setFontColor(0xFF000000);
+	for(int i=0;i<BOARD_DIMS;i++)
+		for(int j=0;j<BOARD_DIMS;j++)
+			text.print(std::to_string(debugGoodness[i][j]),BOARDER_SIZE+PIECE_SIZE*i,BOARDER_SIZE+PIECE_SIZE*j);
 
     graphics->spriteEnd();                  // end drawing sprites
 }
